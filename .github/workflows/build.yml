@@ -1,0 +1,52 @@
+name: build-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  CodeTest:
+    name: Code Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v3
+      - name: Setup Java Version
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Unit Test
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          gradle-version: '7.4.2'
+          arguments: test
+  BuildApplication:
+    name: Build Application
+    needs: CodeTest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v3
+      - name: Setup Java Version
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Build Application
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          gradle-version: '7.4.2'
+          arguments: |
+            build
+      - name: Publish Docker Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Docker Artifacts
+          path: |
+            Dockerfile
+            service/build/libs/**
+      - name: Stop gradle daemon
+        run: ./gradlew --stop
+        shell: bash
