@@ -46,7 +46,7 @@ jobs:
           name: Docker Artifacts
           path: |
             Dockerfile
-            service/build/libs/**
+            build/libs/**
       - name: Stop gradle daemon
         run: ./gradlew --stop
         shell: bash
