@@ -43,9 +43,8 @@ jobs:
       - name: Publish Docker Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: Docker Artifacts
+          name: Artifacts
           path: |
-            Dockerfile
             build/libs/**
       - name: Stop gradle daemon
         run: ./gradlew --stop
